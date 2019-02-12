@@ -13,7 +13,7 @@ const DefaultObjectEditor = (props: Props) => {
   function renderField(field, i) {
     return (
       <div className='DefaultObjectEditor--field' key={i}>
-        {field.get()}
+        {field.render()}
       </div>
     );
   }

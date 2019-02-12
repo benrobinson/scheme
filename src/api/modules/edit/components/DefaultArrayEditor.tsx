@@ -11,7 +11,7 @@ const DefaultArrayEditor = (props: Props) => {
   function renderItem(item, i) {
     return (
       <li className={'DefaultArrayEditor--value'} key={i}>
-        {item.get()}
+        {item.render()}
       </li>
     );
   }

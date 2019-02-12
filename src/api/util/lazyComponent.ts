@@ -1,5 +1,5 @@
 export interface LazyComponent<Component extends FunctionComponent> {
-  get: () => any;
+  render: () => any;
   mapComponent: (f: (Component) => Component) => LazyComponent<Component>;
   mapProps: (f: (Props) => Props) => LazyComponent<Component>;
 }
@@ -19,7 +19,7 @@ export default function lazyComponent<Component extends FunctionComponent>(compo
    *
    * @public
    */
-  function get(): any {
+  function render(): any {
     return component(props);
   }
 
@@ -44,7 +44,7 @@ export default function lazyComponent<Component extends FunctionComponent>(compo
   }
 
   return {
-    get,
+    render,
     mapComponent,
     mapProps
   }
