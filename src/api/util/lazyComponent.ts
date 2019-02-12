@@ -1,7 +1,7 @@
-export interface LazyComponent {
-  render: () => any;
-  withProps: (props: {}) => LazyComponent;
-  withProp: (key: string, value: any) => LazyComponent;
+export interface LazyComponent<Component extends FunctionComponent> {
+  get: () => any;
+  mapComponent: (f: (Component) => Component) => LazyComponent<Component>;
+  mapProps: (f: (Props) => Props) => LazyComponent<Component>;
 }
 
 interface Props {
@@ -12,41 +12,40 @@ interface FunctionComponent {
   (props: {}): any;
 }
 
-export default function lazyComponent<Component extends FunctionComponent>(component: Component, props: Props): LazyComponent {
+export default function lazyComponent<Component extends FunctionComponent>(component: Component, props: Props): LazyComponent<Component> {
 
   /**
    * render
    *
    * @public
    */
-  function render() {
+  function get(): any {
     return component(props);
   }
 
   /**
-   * withProp
+   * mapComponent
    *
    * @public
-   * @param key
-   * @param value
+   * @param f
    */
-  function withProp(key: string, value: any) {
-    return lazyComponent<Component>(component, {...props, [key]: value});
+  function mapComponent(f: (Component) => Component): LazyComponent<Component> {
+    return lazyComponent<Component>(f(component), props);
   }
 
   /**
-   * withProps
+   * mapProps
    *
    * @public
-   * @param ps
+   * @param f
    */
-  function withProps(ps: Props) {
-    return lazyComponent<Component>(component, ps);
+  function mapProps(f: (Props) => Props): LazyComponent<Component> {
+    return lazyComponent<Component>(component, f(props));
   }
 
   return {
-    render,
-    withProp,
-    withProps
+    get,
+    mapComponent,
+    mapProps
   }
 }

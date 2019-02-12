@@ -1,10 +1,10 @@
-import React from 'react';
+import React, {Component} from 'react';
 import lazyComponent, {LazyComponent} from "../../../util/lazyComponent";
 
 interface Props {
   label?: string;
   fields: {
-    [key: string]: LazyComponent
+    [key: string]: LazyComponent<Component>
   };
 }
 
@@ -13,7 +13,7 @@ const DefaultObjectEditor = (props: Props) => {
   function renderField(field, i) {
     return (
       <div className='DefaultObjectEditor--field' key={i}>
-        {field.render()}
+        {field.get()}
       </div>
     );
   }

@@ -1,9 +1,9 @@
-import React from 'react';
+import React, {Component} from 'react';
 import lazyComponent, {LazyComponent} from "../../../util/lazyComponent";
 
 interface Props {
   label?: string;
-  values: LazyComponent[];
+  values: LazyComponent<Component>[];
 }
 
 const DefaultArrayEditor = (props: Props) => {
@@ -11,7 +11,7 @@ const DefaultArrayEditor = (props: Props) => {
   function renderItem(item, i) {
     return (
       <li className={'DefaultArrayEditor--value'} key={i}>
-        {item.render()}
+        {item.get()}
       </li>
     );
   }
