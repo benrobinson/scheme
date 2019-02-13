@@ -66,4 +66,9 @@ function schemeApi<Component extends FunctionComponent>(config: SchemeApiConfig<
     return config.validator(value, schema.value);
   }
 
+  return {
+    editWithSchema,
+    generateFromSchema,
+    validateWithSchema
+  };
 }
