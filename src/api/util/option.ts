@@ -6,7 +6,7 @@ export default interface Option<A> {
   getOrElse: (defaultValue: A) => A
 }
 
-function none<A>(): Option<A> {
+export function none<A>(): Option<A> {
   return {
     isNone: true,
     value: null,
@@ -16,7 +16,7 @@ function none<A>(): Option<A> {
   }
 }
 
-function some<A>(value: A): Option<A> {
+export function some<A>(value: A): Option<A> {
   return {
     isNone: false,
     value: value,

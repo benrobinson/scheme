@@ -3,9 +3,7 @@ import lazyComponent, {LazyComponent} from "../../../util/lazyComponent";
 
 interface Props {
   label?: string;
-  fields: {
-    [key: string]: LazyComponent<Component>
-  };
+  fields:  LazyComponent<Component>[]
 }
 
 const DefaultObjectEditor = (props: Props) => {

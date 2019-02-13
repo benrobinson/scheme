@@ -6,17 +6,17 @@ import DefaultArrayEditor from "../components/DefaultArrayEditor";
 import DefaultStringEditor from "../components/DefaultStringEditor";
 import DefaultNumberEditor from "../components/DefaultNumberEditor";
 import DefaultBooleanEditor from "../components/DefaultBooleanEditor";
-import {LazyComponent} from "../../../util/lazyComponent";
+import {LazyComponent, FunctionComponent} from "../../../util/lazyComponent";
 
-interface EditController {
-  edit: Editor<any, LazyComponent>;
-  withEditor: (name: string, editor: Editor<any, LazyComponent>) => EditController;
-  withEditors: (editors: Editors) => EditController;
+export interface EditController<Component extends FunctionComponent> {
+  edit: Editor<any, LazyComponent<Component>>;
+  withEditor: (name: string, editor: Editor<any, LazyComponent<Component>>) => EditController<Component>;
+  withEditors: (editors: Editors) => EditController<Component>;
 }
 
-export default function editFromConfig(editors: Editors = {}): EditController {
+export default function editFromConfig<Component extends FunctionComponent>(editors: Editors = {}): EditController<Component> {
 
-  const editArrayDefault: Editor<[], LazyComponent> = (value: [], schema: Schema): LazyComponent => {
+  const editArrayDefault: Editor<[], LazyComponent<Component>> = (value: [], schema: Schema): LazyComponent<Component> => {
     const schemaReader = readNullable(schema);
     const values = value.map(v => edit(v, schemaReader.into('items').getOrElse({type: 'string'})));
 
@@ -26,7 +26,7 @@ export default function editFromConfig(editors: Editors = {}): EditController {
     });
   };
 
-  const editBooleanDefault: Editor<boolean, LazyComponent> = (value: boolean, schema): LazyComponent => {
+  const editBooleanDefault: Editor<boolean, LazyComponent<Component>> = (value: boolean, schema): LazyComponent<Component> => {
     const schemaReader = readNullable(schema);
 
     return DefaultBooleanEditor({
@@ -35,7 +35,7 @@ export default function editFromConfig(editors: Editors = {}): EditController {
     });
   };
 
-  const editNumberDefault: Editor<number, LazyComponent> = (value: number, schema: Schema): LazyComponent => {
+  const editNumberDefault: Editor<number, LazyComponent<Component>> = (value: number, schema: Schema): LazyComponent<Component> => {
     const schemaReader = readNullable(schema);
 
     return DefaultNumberEditor({
@@ -46,7 +46,7 @@ export default function editFromConfig(editors: Editors = {}): EditController {
     });
   };
 
-  const editObjectDefault: Editor<{}, LazyComponent> = (value: {}, schema: Schema): LazyComponent => {
+  const editObjectDefault: Editor<any, LazyComponent<Component>> = (value: {}, schema: Schema): LazyComponent<Component> => {
     const schemaReader = readNullable(schema);
     const schemaProps = schemaReader.into('properties').getOrElse({});
     const fields = Object.keys(schemaProps).map(prop => {
@@ -59,7 +59,7 @@ export default function editFromConfig(editors: Editors = {}): EditController {
     });
   };
 
-  const editStringDefault: Editor<string, LazyComponent> = (value: string, schema: Schema): LazyComponent => {
+  const editStringDefault: Editor<string, LazyComponent<Component>> = (value: string, schema: Schema): LazyComponent<Component> => {
     const schemaReader = readNullable(schema);
 
     return DefaultStringEditor({
@@ -68,7 +68,7 @@ export default function editFromConfig(editors: Editors = {}): EditController {
     });
   };
 
-  const editDefault: Editor<any, LazyComponent> = (value: any, schema: Schema): LazyComponent => {
+  const editDefault: Editor<any, LazyComponent<Component>> = (value: any, schema: Schema): LazyComponent<Component> => {
     switch(schema.type) {
       case SchemaType.ARRAY:
         return editArrayDefault(value, schema);
@@ -85,7 +85,7 @@ export default function editFromConfig(editors: Editors = {}): EditController {
     }
   };
 
-  const editorsReader = readNullable<Editor<any, LazyComponent>>(editors);
+  const editorsReader = readNullable<Editor<any, LazyComponent<Component>>>(editors);
 
 
   /**
@@ -95,7 +95,7 @@ export default function editFromConfig(editors: Editors = {}): EditController {
    * @param value
    * @param schema
    */
-  const edit: Editor<any, LazyComponent> = (value: any, schema: Schema) => {
+  const edit: Editor<any, LazyComponent<Component>> = (value: any, schema: Schema): LazyComponent<Component> => {
     const editor = readNullable(schema).into('editor').asOpt<string>();
 
     if (!editor.isNone && !editorsReader.into(editor.value).asOpt().isNone) {
@@ -112,7 +112,7 @@ export default function editFromConfig(editors: Editors = {}): EditController {
    * @param {string} name
    * @param {Editor} editor
    */
-  function withEditor(name: string, editor: Editor<any, LazyComponent>): EditController {
+  function withEditor(name: string, editor: Editor<any, LazyComponent<Component>>): EditController<Component> {
     return editFromConfig({...editors, [name]: editor});
   }
 
@@ -120,10 +120,10 @@ export default function editFromConfig(editors: Editors = {}): EditController {
    * withEditors
    *
    * @public
-   * @param {Editors} editors
+   * @param {Editors} es
    */
-  function withEditors(editors: Editors): EditController {
-    return editFromConfig(editors);
+  function withEditors(es: Editors): EditController<Component> {
+    return editFromConfig({...editors, ...es});
   }
 
   return {

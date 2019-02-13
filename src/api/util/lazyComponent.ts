@@ -8,7 +8,7 @@ interface Props {
   [key: string]: any;
 }
 
-interface FunctionComponent {
+export interface FunctionComponent {
   (props: {}): any;
 }
 
