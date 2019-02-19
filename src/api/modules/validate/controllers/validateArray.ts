@@ -1,5 +1,5 @@
 import {readNullable} from "../../../util/readNullable";
-import validate from "../../../controllers/validate";
+import validate from "./validate";
 import Validator from "../models/Validator";
 import Schema from "../../../models/Schema";
 import Option from "../../../util/option";
