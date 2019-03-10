@@ -1,8 +1,8 @@
 import Validator from "../models/Validator";
-import {readNullable} from "../../../util/readNullable";
+import ReadWriter from "../../../util/ReadWriter";
 
 const validateEnum: Validator<any> = (value: any, schema) => {
-  const enumValues = readNullable(schema).into("enum").getOrElse([]);
+  const enumValues = ReadWriter(schema).into("enum").readAsOpt<[]>().getOrElse([]);
 
   if (enumValues.length < 1) return true;
 

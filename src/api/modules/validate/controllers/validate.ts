@@ -4,8 +4,9 @@ import validateString from "./validateString";
 import validateEnum from "./validateEnum";
 import Validator from "../models/Validator";
 import Schema, {SchemaType} from "../../../models/Schema";
+import ValidateController from "../models/ValidateController";
 
-const validate: Validator<any> = (value, schema: Schema): boolean => {
+export const validate: Validator<any> = (value, schema: Schema): boolean => {
   switch(schema.type) {
     case SchemaType.ARRAY:
       return validateArray(value, schema) && validateEnum(value, schema);
@@ -18,4 +19,18 @@ const validate: Validator<any> = (value, schema: Schema): boolean => {
   }
 };
 
-export default validate;
+export default function validatorConfig(validator: Validator<any> = validate): ValidateController {
+
+  function withValidator(validator: Validator<any>): ValidateController {
+    return validatorConfig(validator);
+  }
+
+  function toFunction(): Validator<any> {
+    return validator;
+  }
+
+  return {
+    toFunction,
+    withValidator
+  };
+}

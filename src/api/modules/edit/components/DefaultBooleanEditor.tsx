@@ -1,5 +1,5 @@
 import React from 'react';
-import lazyComponent from "../../../util/lazyComponent";
+import lazyComponent from "../../../util/LazyComponent";
 
 interface Props {
   label?: string,

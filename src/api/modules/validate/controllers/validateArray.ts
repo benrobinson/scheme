@@ -1,18 +1,18 @@
-import {readNullable} from "../../../util/readNullable";
+import ReadWriter from "../../../util/ReadWriter";
 import validate from "./validate";
 import Validator from "../models/Validator";
 import Schema from "../../../models/Schema";
-import Option from "../../../util/option";
+import Option from "../../../util/Option";
 
 const validateArray: Validator<[]> = (value: [], schema: Schema): boolean => {
 
   if (!Array.isArray(value)) return false;
 
-  const schemaReader = readNullable(schema);
-  const items = schemaReader.into('items').getOrElse(null);
+  const schemaReader = ReadWriter(schema);
+  const items = schemaReader.into('items').read();
 
   function validateContains(): boolean {
-    const contains = schemaReader.into('contains').getOrElse(false);
+    const contains = schemaReader.into('contains').read();
 
     if (!contains) return true;
 
@@ -27,7 +27,7 @@ const validateArray: Validator<[]> = (value: [], schema: Schema): boolean => {
     if (!items) return true;
     if (Array.isArray(items)) return validateTuple();
 
-    const itemSchema: Option<Schema> = schemaReader.into('items').asOpt<Schema>();
+    const itemSchema: Option<Schema> = schemaReader.into('items').readAsOpt<Schema>();
 
     if (itemSchema.isNone) return true;
 
@@ -39,8 +39,8 @@ const validateArray: Validator<[]> = (value: [], schema: Schema): boolean => {
   }
 
   function validateLength(): boolean {
-    const min = schemaReader.into('minItems').getOrElse(0);
-    const max = schemaReader.into('maxItems').getOrElse(value.length);
+    const min = schemaReader.into('minItems').readAsOpt<number>().getOrElse(0);
+    const max = schemaReader.into('maxItems').readAsOpt<number>().getOrElse(value.length);
 
     return (value.length >= min && value.length <= max);
   }
@@ -58,7 +58,7 @@ const validateArray: Validator<[]> = (value: [], schema: Schema): boolean => {
   }
 
   function validateUnique(): boolean {
-    const isUnique = schemaReader.into('uniqueItems').getOrElse(false);
+    const isUnique = schemaReader.into('uniqueItems').readAsOpt<boolean>().getOrElse(false);
 
     if (!isUnique) return true;
 

@@ -1,9 +1,7 @@
 import Schema from "../../../models/Schema";
+import EditorUI from "./EditorUI";
 
-export default interface Editor<T, Component> {
-  (value: T, schema: Schema): Component;
+export default interface Editor<T> {
+  (value: T, schema: Schema): EditorUI;
 }
 
-export interface Editors {
-  [key: string]: Editor<any, any>;
-}

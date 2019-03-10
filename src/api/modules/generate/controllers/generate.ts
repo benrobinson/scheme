@@ -1,8 +1,9 @@
 import Generator from "../models/Generator";
 import Schema, {SchemaType} from "../../../models/Schema";
-import {readNullable} from "../../../util/readNullable";
+import ReadWriter from "../../../util/ReadWriter";
+import GenerateController from "../models/GenerateController";
 
-const generate: Generator<any> = (schema: Schema) => {
+export const generate: Generator<any> = (schema: Schema) => {
   switch (schema.type) {
     case SchemaType.ARRAY:
       return generateArray(schema);
@@ -20,27 +21,25 @@ const generate: Generator<any> = (schema: Schema) => {
   }
 };
 
-export default generate;
-
 const generateArray: Generator<[]> = (schema: Schema) =>
-  readNullable(schema).into('default').getOrElse([]);
+  ReadWriter(schema).into('default').readAsOpt<[]>().getOrElse([]);
 
-const generateBoolean: Generator<string> = (schema: Schema) =>
-  readNullable(schema).into('default').getOrElse(false);
+const generateBoolean: Generator<boolean> = (schema: Schema) =>
+  ReadWriter(schema).into('default').readAsOpt<boolean>().getOrElse(false);
 
 const generateString: Generator<string> = (schema: Schema) =>
-  readNullable(schema).into('default').getOrElse('');
+  ReadWriter(schema).into('default').readAsOpt<string>().getOrElse('');
 
 const generateNumber: Generator<number> = (schema: Schema) =>
-  readNullable(schema).into('default').getOrElse(0);
+  ReadWriter(schema).into('default').readAsOpt<number>().getOrElse(0);
 
 const generateObject: Generator<{}> = (schema: Schema) => {
-  const schemaReader = readNullable(schema);
-  const defaultValue = schemaReader.into('default').asOpt();
+  const schemaReader = ReadWriter(schema);
+  const defaultValue = schemaReader.into('default').readAsOpt<{}>();
 
   if (!defaultValue.isNone) return defaultValue.value;
 
-  const props = schemaReader.into('properties').asOpt();
+  const props = schemaReader.into('properties').readAsOpt<{}>();
 
   if (props.isNone) return {};
 
@@ -51,3 +50,19 @@ const generateObject: Generator<{}> = (schema: Schema) => {
       return {...defaultValue, [key]: fieldValue}
     }, {});
 };
+
+export default function generateController(generator: Generator<any> = generate): GenerateController {
+
+  function toFunction(): Generator<any> {
+    return generator;
+  }
+
+  function withGenerator(generator: Generator<any>): GenerateController {
+    return generateController(generator);
+  }
+
+  return {
+    toFunction,
+    withGenerator
+  };
+}

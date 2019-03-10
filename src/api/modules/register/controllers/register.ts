@@ -1,6 +1,6 @@
 import Schema, {Schemas} from "../../../models/Schema";
-import Option from "../../../util/option";
-import {readNullable} from "../../../util/readNullable";
+import Option from "../../../util/Option";
+import ReadWriter from "../../../util/ReadWriter";
 
 export interface RegisterController {
   getSchema(key: string): Option<Schema>;
@@ -11,7 +11,7 @@ export interface RegisterController {
 const registerFromConfig = (schemas: Schemas = {}): RegisterController => {
   
   function getSchema(key: string): Option<Schema> {
-    return readNullable(schemas).into(key).asOpt();
+    return ReadWriter(schemas).into(key).readAsOpt<Schema>();
   }
   
   function withSchema(key: string, schema: Schema): RegisterController {

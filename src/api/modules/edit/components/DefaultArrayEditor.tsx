@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import lazyComponent, {LazyComponent} from "../../../util/lazyComponent";
+import lazyComponent, {LazyComponent} from "../../../util/LazyComponent";
 
 interface Props {
   label?: string;
@@ -8,10 +8,10 @@ interface Props {
 
 const DefaultArrayEditor = (props: Props) => {
 
-  function renderItem(item, i) {
+  function renderItem(item: LazyComponent<Component>, i) {
     return (
       <li className={'DefaultArrayEditor--value'} key={i}>
-        {item.render()}
+        {item.get()}
       </li>
     );
   }
