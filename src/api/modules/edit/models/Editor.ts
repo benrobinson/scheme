@@ -1,7 +1,9 @@
 import Schema from "../../../models/Schema";
-import EditorUI from "./EditorUI";
+import {ReadWriter} from "../../../util/ReadWriter";
+import OnUpdate from "./OnUpdate";
+import {FunctionComponent, ReactElement} from "react";
 
 export default interface Editor<T> {
-  (value: T, schema: Schema): EditorUI;
+  (value: T, schema: Schema, path: ReadWriter, onUpdate: OnUpdate): ReactElement;
 }
 

@@ -2,7 +2,6 @@ import Validator from "../models/Validator";
 import ReadWriter from "../../../util/ReadWriter";
 import Option from "../../../util/Option";
 import Schema from "../../../models/Schema";
-import validateEnum from "./validateEnum";
 
 const validateString: Validator<string> = (value: string, schema: Schema): boolean => {
 

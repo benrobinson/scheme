@@ -1,17 +1,17 @@
-import React, {Component} from 'react';
-import lazyComponent, {LazyComponent} from "../../../util/LazyComponent";
+import * as React from "react";
+import {FunctionComponent, ReactElement} from "react";
 
 interface Props {
   label?: string;
-  values: LazyComponent<Component>[];
+  values: ReactElement[];
 }
 
-const DefaultArrayEditor = (props: Props) => {
+const DefaultArrayEditor: FunctionComponent<Props> = (props: Props) => {
 
-  function renderItem(item: LazyComponent<Component>, i) {
+  function renderItem(item: ReactElement, i) {
     return (
       <li className={'DefaultArrayEditor--value'} key={i}>
-        {item.get()}
+        {item}
       </li>
     );
   }
@@ -36,4 +36,4 @@ const DefaultArrayEditor = (props: Props) => {
   );
 };
 
-export default (props: Props) => lazyComponent(DefaultArrayEditor, props);
+export default DefaultArrayEditor;

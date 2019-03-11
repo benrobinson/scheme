@@ -7,16 +7,21 @@ import DefaultBooleanEditor from "../components/DefaultBooleanEditor";
 import EditController from "../models/EditController";
 import Editor from "../models/Editor";
 import Editors from "../models/Editors";
-import EditorUI from "../models/EditorUI";
+import EditorComponent from "../models/EditorComponent";
 
-import ReadWriter from "../../../util/ReadWriter";
+import readWriter, {ReadWriter} from "../../../util/ReadWriter";
 import Schema, {SchemaType} from "../../../models/Schema";
+import OnUpdate from "../models/OnUpdate";
+import EditorProps from "../models/EditorProps";
+
+import {ReactElement} from "react";
 
 export default function editController(editors: Editors = {}): EditController {
 
-  const editArrayDefault: Editor<[]> = (value: [], schema: Schema): EditorUI => {
-    const schemaReader = ReadWriter(schema);
-    const values = value.map(v => edit(v, schemaReader.into('items').readAsOpt<Schema>().getOrElse({type: 'string'})));
+  const editArrayDefault: Editor<[]> = (value: [], schema: Schema, path: ReadWriter, onUpdate: OnUpdate): ReactElement => {
+    const schemaReader = readWriter(schema);
+    const values = value.map((v, i) =>
+      edit(v, schemaReader.into('items').readAsOpt<Schema>().getOrElse({type: 'string'}), path.into(i), onUpdate));
 
     return DefaultArrayEditor({
       label: schemaReader.into('title').readAsOpt<string>().getOrElse('Array Editor'),
@@ -24,32 +29,33 @@ export default function editController(editors: Editors = {}): EditController {
     });
   };
 
-  const editBooleanDefault: Editor<boolean> = (value: boolean, schema): EditorUI => {
-    const schemaReader = ReadWriter(schema);
+  const editBooleanDefault: Editor<boolean> = (value: boolean, schema: Schema, path: ReadWriter, onUpdate: OnUpdate): ReactElement => {
+    const schemaReader = readWriter(schema);
 
     return DefaultBooleanEditor({
       label: schemaReader.into('title').readAsOpt<string>().getOrElse('Boolean Editor'),
+      onChange: (value: boolean) => onUpdate(path.write(value).read()),
       value
     });
   };
 
-  const editNumberDefault: Editor<number> = (value: number, schema: Schema): EditorUI => {
-    const schemaReader = ReadWriter(schema);
+  const editNumberDefault: Editor<number> = (value: number, schema: Schema, path: ReadWriter, onUpdate: OnUpdate): ReactElement => {
+    const schemaReader = readWriter(schema);
 
     return DefaultNumberEditor({
       label: schemaReader.into('title').readAsOpt<string>().getOrElse('Number Editor'),
       minimum: schemaReader.into('minimum').readAsOpt<number>().getOrElse(Number.MIN_VALUE),
       maximum: schemaReader.into('maximum').readAsOpt<number>().getOrElse(Number.MAX_VALUE),
+      onChange: (value: number) => onUpdate(path.write(value).read()),
       value
     });
   };
 
-  const editObjectDefault: Editor<any> = (value: {}, schema: Schema): EditorUI => {
-    const schemaReader = ReadWriter(schema);
+  const editObjectDefault: Editor<any> = (value: {}, schema: Schema, path: ReadWriter, onUpdate: OnUpdate): ReactElement => {
+    const schemaReader = readWriter(schema);
     const schemaProps = schemaReader.into('properties').readAsOpt<{}>().getOrElse({});
-    const fields = Object.keys(schemaProps).map(prop => {
-      return edit(value[prop], schemaProps[prop]);
-    });
+    const fields = Object.keys(schemaProps).map(prop =>
+      edit(value[prop], schemaProps[prop], path.into(prop), onUpdate));
 
     return DefaultObjectEditor({
       label: schemaReader.into('title').readAsOpt<string>().getOrElse('Object Editor'),
@@ -57,50 +63,59 @@ export default function editController(editors: Editors = {}): EditController {
     });
   };
 
-  const editStringDefault: Editor<string> = (value: string, schema: Schema): EditorUI => {
-    const schemaReader = ReadWriter(schema);
+  const editStringDefault: Editor<string> = (value: string, schema: Schema, path: ReadWriter, onUpdate: OnUpdate): ReactElement => {
+    const schemaReader = readWriter(schema);
 
     return DefaultStringEditor({
       label: schemaReader.into('title').readAsOpt<string>().getOrElse('Text Editor'),
+      onChange: (value: string) => onUpdate(path.write(value).read()),
       value
     });
   };
 
-  const editDefault: Editor<any> = (value: any, schema: Schema): EditorUI => {
+  const editDefault: Editor<any> = (value: any, schema: Schema, path: ReadWriter, onUpdate: OnUpdate): ReactElement => {
     switch(schema.type) {
       case SchemaType.ARRAY:
-        return editArrayDefault(value, schema);
+        return editArrayDefault(value, schema, path, onUpdate);
       case SchemaType.BOOLEAN:
-        return editBooleanDefault(value, schema);
+        return editBooleanDefault(value, schema, path, onUpdate);
       case SchemaType.NUMBER:
-        return editNumberDefault(value, schema);
+        return editNumberDefault(value, schema, path, onUpdate);
       case SchemaType.OBJECT:
-        return editObjectDefault(value, schema);
+        return editObjectDefault(value, schema, path, onUpdate);
       case SchemaType.STRING:
-        return editStringDefault(value, schema);
+        return editStringDefault(value, schema, path, onUpdate);
       default:
-        return;
+        return null;
     }
   };
 
-  const editorsReader = ReadWriter(editors);
+  const editorsReader = readWriter(editors);
 
-  const edit: Editor<any> = (value: any, schema: Schema): EditorUI => {
-    const editor = ReadWriter(schema).into('editor').readAsOpt<string>();
+  const edit: Editor<any> = (value: any, schema: Schema, path: ReadWriter, onUpdate: OnUpdate): ReactElement => {
+    const editor = readWriter(schema).into('editor').readAsOpt<string>();
 
     if (!editor.isNone && !editorsReader.into(editor.value).readAsOpt<Editor<any>>().isNone) {
-      return editors[editor.value](value, schema);
+      return editors[editor.value](value, schema, path, onUpdate);
     } else {
-      return editDefault(value, schema);
+      return editDefault(value, schema, path, onUpdate);
     }
   };
 
-  function toFunction(): Editor<any> {
-    return edit;
+  function toFunction() {
+    return (value: any, schema: Schema): EditorComponent => {
+      return (props: EditorProps): ReactElement => {
+        const v = readWriter(props).into('value').readAsOpt().isNone
+          ? value
+          : props.value;
+        const path = readWriter(v);
+        return edit(v, schema, path, props.onUpdate);
+      };
+    }
   }
 
-  function withEditor(key: string, editor: Editor): EditController {
-    return editController(ReadWriter(editors).into(key).write(editor).read());
+  function withEditor<T>(key: string, editor: Editor<T>): EditController {
+    return editController(readWriter(editors).into(key).write(editor).read());
   }
 
   function withEditors(editors: Editors): EditController {
@@ -114,4 +129,3 @@ export default function editController(editors: Editors = {}): EditController {
   };
 
 };
-

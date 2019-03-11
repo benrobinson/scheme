@@ -1,14 +1,15 @@
-import React from 'react';
-import lazyComponent from "../../../util/LazyComponent";
+import * as React from 'react';
+import {FunctionComponent} from "react";
 
 interface Props {
   label?: string;
   maximum: number;
   minimum: number;
+  onChange: (value: number) => any,
   value: number;
 }
 
-const DefaultNumberEditor = (props: Props) => {
+const DefaultNumberEditor: FunctionComponent<Props> = (props: Props) => {
 
   function renderLabel() {
     if (!!props.label) {
@@ -20,12 +21,20 @@ const DefaultNumberEditor = (props: Props) => {
     return null;
   }
 
+  function handleChange(e) {
+    props.onChange(parseFloat(e.target.value))
+  }
+
   return (
     <div className={'DefaultNumberEditor--root'}>
       {renderLabel()}
-      <input type={'number'} defaultValue={props.value} />
+      <input
+        type={'number'}
+        defaultValue={props.value.toString()}
+        onChange={handleChange}
+      />
     </div>
   );
 };
 
-export default (props: Props) => lazyComponent(DefaultNumberEditor, props);
+export default DefaultNumberEditor;

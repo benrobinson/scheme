@@ -6,7 +6,7 @@ import Validator from "../models/Validator";
 import Schema, {SchemaType} from "../../../models/Schema";
 import ValidateController from "../models/ValidateController";
 
-export const validate: Validator<any> = (value, schema: Schema): boolean => {
+export const validate: Validator<any> = (value: any, schema: Schema): boolean => {
   switch(schema.type) {
     case SchemaType.ARRAY:
       return validateArray(value, schema) && validateEnum(value, schema);

@@ -1,22 +1,23 @@
 import Option, {option} from "./Option";
 
-interface ReadWriter {
-  into: (key: string) => ReadWriter
+export interface ReadWriter {
+  isEmpty: boolean;
+  into: (key: string|number) => ReadWriter
   read: <B>() => B;
   readAsOpt: <B>() => Option<B>;
   write: <B>(value: B) => ReadWriter;
-  writePath: <B>(path: string[], value: B) => ReadWriter;
+  writePath: <B>(path: (string|number)[], value: B) => ReadWriter;
 }
 
 export default function readWriter(original: any): ReadWriter {
 
-  function rw(current: any, path: string[]): ReadWriter {
+  function rw(current: any, path: (string|number)[]): ReadWriter {
 
     function readAsOpt<B>(): Option<B> {
       return option(read());
     }
 
-    function into(key: string): ReadWriter {
+    function into(key: string|number): ReadWriter {
       if (!!current) {
         return rw(current[key] || null, [...path, key]);
       } else {
@@ -32,7 +33,7 @@ export default function readWriter(original: any): ReadWriter {
       return writePath(path, value);
     }
 
-    function writePath<B>(p: string[], value: B): ReadWriter {
+    function writePath<B>(p: (string|number)[], value: B): ReadWriter {
       let updated = {...original};
       let cursor = updated;
 
@@ -51,6 +52,7 @@ export default function readWriter(original: any): ReadWriter {
     }
 
     return {
+      isEmpty: (!!original),
       into,
       read,
       readAsOpt,

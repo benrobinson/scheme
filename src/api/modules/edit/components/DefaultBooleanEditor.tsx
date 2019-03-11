@@ -1,12 +1,13 @@
-import React from 'react';
-import lazyComponent from "../../../util/LazyComponent";
+import * as React from 'react';
+import {FunctionComponent} from "react";
 
 interface Props {
   label?: string,
+  onChange: (value: boolean) => any,
   value: boolean;
 }
 
-const DefaultBooleanEditor = (props: Props) => {
+const DefaultBooleanEditor: FunctionComponent<Props> = (props: Props) => {
 
   function renderLabel() {
     if (!!props.label) {
@@ -18,12 +19,20 @@ const DefaultBooleanEditor = (props: Props) => {
     return null;
   }
 
+  function handleChange(e) {
+    props.onChange(!props.value)
+  }
+
   return (
     <div className={'DefaultBooleanEditor--root'}>
       {renderLabel()}
-      <input type={'checkbox'} checked={props.value} />
+      <input
+        type={'checkbox'}
+        checked={props.value}
+        onChange={handleChange}
+      />
     </div>
   );
 };
 
-export default (props: Props) => lazyComponent(DefaultBooleanEditor, props);
+export default DefaultBooleanEditor;

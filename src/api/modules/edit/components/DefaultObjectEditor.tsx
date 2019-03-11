@@ -1,17 +1,17 @@
-import React, {Component} from 'react';
-import lazyComponent, {LazyComponent} from "../../../util/LazyComponent";
+import * as React from 'react';
+import {FunctionComponent, ReactElement} from "react";
 
 interface Props {
   label?: string;
-  fields:  LazyComponent<Component>[]
+  fields: ReactElement[]
 }
 
-const DefaultObjectEditor = (props: Props) => {
+const DefaultObjectEditor: FunctionComponent<Props> = (props: Props) => {
 
-  function renderField(field, i) {
+  function renderField(field: ReactElement, i) {
     return (
       <div className='DefaultObjectEditor--field' key={i}>
-        {field.render()}
+        {field}
       </div>
     );
   }
@@ -37,4 +37,4 @@ const DefaultObjectEditor = (props: Props) => {
 
 };
 
-export default (props: Props) => lazyComponent(DefaultObjectEditor, props);
+export default DefaultObjectEditor;
