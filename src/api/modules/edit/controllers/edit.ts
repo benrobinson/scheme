@@ -15,16 +15,32 @@ import OnUpdate from "../models/OnUpdate";
 import EditorProps from "../models/EditorProps";
 
 import {ReactElement} from "react";
+import {generate} from "../../generate/controllers/generate";
+
+export interface DefaultArrayItem {
+  editor: ReactElement,
+  value: any
+}
 
 export default function editController(editors: Editors = {}): EditController {
 
   const editArrayDefault: Editor<[]> = (value: [], schema: Schema, path: ReadWriter, onUpdate: OnUpdate): ReactElement => {
     const schemaReader = readWriter(schema);
-    const values = value.map((v, i) =>
-      edit(v, schemaReader.into('items').readAsOpt<Schema>().getOrElse({type: 'string'}), path.into(i), onUpdate));
+    const itemSchema = schemaReader.into('items').readAsOpt<Schema>().getOrElse({type: 'null'});
+    const values: DefaultArrayItem[] = value.map((v, i) => {
+      return {
+        editor: edit(v, itemSchema, path.into(i), onUpdate),
+        value: v
+      }
+    });
+    const blankItem = generate(itemSchema);
+    const onAddItem = () => onUpdate(path.write([...value, blankItem]).read());
+    const onRemoveItem = (item: any) => onUpdate(path.write(value.filter(v => v !== item)).read());
 
     return DefaultArrayEditor({
       label: schemaReader.into('title').readAsOpt<string>().getOrElse('Array Editor'),
+      onAddItem,
+      onRemoveItem,
       values
     });
   };

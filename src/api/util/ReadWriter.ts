@@ -1,10 +1,12 @@
 import Option, {option} from "./Option";
 
 export interface ReadWriter {
+  fromJson: (input: string) => ReadWriter;
   isEmpty: boolean;
-  into: (key: string|number) => ReadWriter
+  into: (key: string|number) => ReadWriter;
   read: <B>() => B;
   readAsOpt: <B>() => Option<B>;
+  toJson: () => string;
   write: <B>(value: B) => ReadWriter;
   writePath: <B>(path: (string|number)[], value: B) => ReadWriter;
 }
@@ -42,7 +44,12 @@ export default function readWriter(original: any): ReadWriter {
           cursor[p[i]] = {};
         }
 
-        cursor[p[i]] = {...cursor[p[i]]};
+        if (Array.isArray(cursor[p[i]])) {
+          cursor[p[i]] = [...cursor[p[i]]];
+        } else {
+          cursor[p[i]] = {...cursor[p[i]]};
+        }
+
         cursor = cursor[p[i]];
       }
 
@@ -51,11 +58,21 @@ export default function readWriter(original: any): ReadWriter {
       return readWriter({...updated});
     }
 
+    function fromJson(input: string): ReadWriter {
+      return readWriter(JSON.parse(input));
+    }
+
+    function toJson(): string {
+      return JSON.stringify(current);
+    }
+
     return {
+      fromJson,
       isEmpty: (!!original),
       into,
       read,
       readAsOpt,
+      toJson,
       write,
       writePath
     }

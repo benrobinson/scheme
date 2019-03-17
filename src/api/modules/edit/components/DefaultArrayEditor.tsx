@@ -1,17 +1,23 @@
 import * as React from "react";
 import {FunctionComponent, ReactElement} from "react";
+import {DefaultArrayItem} from "../controllers/edit";
 
 interface Props {
   label?: string;
-  values: ReactElement[];
+  onAddItem: () => any;
+  onRemoveItem: (item: any) => any;
+  values: DefaultArrayItem[];
 }
 
 const DefaultArrayEditor: FunctionComponent<Props> = (props: Props) => {
 
-  function renderItem(item: ReactElement, i) {
+  function renderItem(item: DefaultArrayItem, i) {
     return (
       <li className={'DefaultArrayEditor--value'} key={i}>
-        {item}
+        {item.editor}
+        <button className={'DefaultArrayEditor--remove-button'} onClick={() => props.onRemoveItem(item.value)}>
+          {'Remove'}
+        </button>
       </li>
     );
   }
@@ -32,6 +38,12 @@ const DefaultArrayEditor: FunctionComponent<Props> = (props: Props) => {
       <ul className={'DefaultArrayEditor---values'}>
         {props.values.map(renderItem)}
       </ul>
+      <button
+        className={'DefaultArrayEditor--add-button'}
+        onClick={props.onAddItem}
+      >
+        {'Add'}
+      </button>
     </div>
   );
 };

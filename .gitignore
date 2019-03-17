@@ -1,3 +1,5 @@
 node_modules
 src/package-lock.json
 .idea
+.cache
+dist/
