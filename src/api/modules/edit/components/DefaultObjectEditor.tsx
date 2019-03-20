@@ -1,16 +1,19 @@
 import * as React from 'react';
 import {FunctionComponent, ReactElement} from "react";
+import namespaceClassName from '../../../util/namespaceClassName';
 
 interface Props {
   label?: string;
   fields: ReactElement[]
 }
 
+const c = namespaceClassName('DefaultObjectEditor');
+
 const DefaultObjectEditor: FunctionComponent<Props> = (props: Props) => {
 
   function renderField(field: ReactElement, i) {
     return (
-      <div className='DefaultObjectEditor--field' key={i}>
+      <div className={c('field')} key={i}>
         {field}
       </div>
     );
@@ -19,7 +22,7 @@ const DefaultObjectEditor: FunctionComponent<Props> = (props: Props) => {
   function renderLabel() {
     if (!!props.label) {
       return (
-        <label className={'DefaultObjectEditor--label'}>{props.label}</label>
+        <label className={c('label')}>{props.label}</label>
       );
     }
 
@@ -27,8 +30,8 @@ const DefaultObjectEditor: FunctionComponent<Props> = (props: Props) => {
   }
 
   return (
-    <div className={'DefaultObjectEditor--root'}>
-      <fieldset className={'DefaultObjectEditor--fields'}>
+    <div className={c('root')}>
+      <fieldset className={c('fields')}>
         {renderLabel()}
         {Object.keys(props.fields).map((k, i) => renderField(props.fields[k], i))}
       </fieldset>

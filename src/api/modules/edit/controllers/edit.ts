@@ -26,7 +26,15 @@ export default function editController(editors: Editors = {}): EditController {
 
   const editArrayDefault: Editor<[]> = (value: [], schema: Schema, path: ReadWriter, onUpdate: OnUpdate): ReactElement => {
     const schemaReader = readWriter(schema);
-    const itemSchema = schemaReader.into('items').readAsOpt<Schema>().getOrElse({type: 'null'});
+    const itemSchemas = schemaReader
+      .into('items')
+      .readAsOpt()
+      .getOrElse(schemaReader
+        .into('items')
+        .into('anyOf')
+        .readAsOpt<any[]>()
+        .getOrElse([]));
+
     const values: DefaultArrayItem[] = value.map((v, i) => {
       return {
         editor: edit(v, itemSchema, path.into(i), onUpdate),
@@ -34,8 +42,8 @@ export default function editController(editors: Editors = {}): EditController {
       }
     });
     const blankItem = generate(itemSchema);
-    const onAddItem = () => onUpdate(path.write([...value, blankItem]).read());
-    const onRemoveItem = (item: any) => onUpdate(path.write(value.filter(v => v !== item)).read());
+    const onAddItem = () => onUpdate(path.write([...value, blankItem]));
+    const onRemoveItem = (item: any) => onUpdate(path.write(value.filter(v => v !== item)));
 
     return DefaultArrayEditor({
       label: schemaReader.into('title').readAsOpt<string>().getOrElse('Array Editor'),
@@ -50,8 +58,8 @@ export default function editController(editors: Editors = {}): EditController {
 
     return DefaultBooleanEditor({
       label: schemaReader.into('title').readAsOpt<string>().getOrElse('Boolean Editor'),
-      onChange: (value: boolean) => onUpdate(path.write(value).read()),
-      value
+      onChange: (value: boolean) => onUpdate(path.write(value)),
+      value: readWriter(value).readAsOpt<boolean>().getOrElse(false)
     });
   };
 
@@ -62,8 +70,8 @@ export default function editController(editors: Editors = {}): EditController {
       label: schemaReader.into('title').readAsOpt<string>().getOrElse('Number Editor'),
       minimum: schemaReader.into('minimum').readAsOpt<number>().getOrElse(Number.MIN_VALUE),
       maximum: schemaReader.into('maximum').readAsOpt<number>().getOrElse(Number.MAX_VALUE),
-      onChange: (value: number) => onUpdate(path.write(value).read()),
-      value
+      onChange: (value: number) => onUpdate(path.write(value)),
+      value: readWriter(value).readAsOpt<number>().getOrElse(0)
     });
   };
 
@@ -84,8 +92,8 @@ export default function editController(editors: Editors = {}): EditController {
 
     return DefaultStringEditor({
       label: schemaReader.into('title').readAsOpt<string>().getOrElse('Text Editor'),
-      onChange: (value: string) => onUpdate(path.write(value).read()),
-      value
+      onChange: (value: string) => onUpdate(path.write(value)),
+      value: readWriter(value).readAsOpt<string>().getOrElse('')
     });
   };
 
@@ -131,7 +139,7 @@ export default function editController(editors: Editors = {}): EditController {
   }
 
   function withEditor<T>(key: string, editor: Editor<T>): EditController {
-    return editController(readWriter(editors).into(key).write(editor).read());
+    return editController(readWriter(editors).into(key).write(editor));
   }
 
   function withEditors(editors: Editors): EditController {

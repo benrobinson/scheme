@@ -2,29 +2,54 @@ import * as React from 'react';
 import {render} from 'react-dom';
 import Scheme, {schemeConfigDefault} from '../api/Scheme';
 import {Component, FunctionComponent} from "react";
+import editController from "../api/modules/edit/controllers/edit";
+import generateController from "../api/modules/generate/controllers/generate";
+import validateController from "../api/modules/validate/controllers/validate";
+import IllustrationEditor from './IllustrationEditor';
 
-const scheme = Scheme(schemeConfigDefault());
+const scheme = Scheme({
+  editController: editController().withEditor('IllustrationEditor', IllustrationEditor),
+  generateController: generateController(),
+  validateController: validateController()
+});
 
 const exampleSchema = {
-  type: 'object',
-  properties: {
-    foo: {
-      type: 'string',
-      default: 'Eggs'
-    },
-    bar: {
-      type: 'number',
-      default: 3
-    },
-    baz: {
-      type: 'boolean',
-      default: false
-    },
-    qux: {
-      type: 'array',
-      default: [],
-      items: {
-        type: 'string'
+  title: 'Lots o\' objects',
+  type: 'array',
+  items: {
+    type: 'object',
+    properties: {
+      foo: {
+        type: 'string',
+        default: 'Eggs'
+      },
+      bar: {
+        type: 'number',
+        default: 3
+      },
+      baz: {
+        type: 'boolean',
+        default: false
+      },
+      qux: {
+        type: 'array',
+        default: [],
+        items: {
+          type: 'string'
+        }
+      },
+      illustration: {
+        type: 'object',
+        editor: 'IllustrationEditor',
+        properties: {
+          link: {
+            type: 'string'
+          },
+          type: {
+            type: 'string',
+            enum: ['image', 'video']
+          }
+        }
       }
     }
   }
@@ -44,6 +69,7 @@ class Wrapper extends Component<any, any> {
   }
 
   handleUpdate = (value) => {
+    console.log(value);
     this.setState({value});
   };
 

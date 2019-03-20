@@ -7,8 +7,8 @@ export interface ReadWriter {
   read: <B>() => B;
   readAsOpt: <B>() => Option<B>;
   toJson: () => string;
-  write: <B>(value: B) => ReadWriter;
-  writePath: <B>(path: (string|number)[], value: B) => ReadWriter;
+  write: <B>(value: B) => any;
+  writePath: <B>(path: (string|number)[], value: B) => any;
 }
 
 export default function readWriter(original: any): ReadWriter {
@@ -31,12 +31,13 @@ export default function readWriter(original: any): ReadWriter {
       return current || null;
     }
 
-    function write<B>(value: B): ReadWriter {
+    function write<B>(value: B): any {
       return writePath(path, value);
     }
 
-    function writePath<B>(p: (string|number)[], value: B): ReadWriter {
-      let updated = {...original};
+    function writePath<B>(p: (string|number)[], value: B): any {
+      const origIsArray = Array.isArray(original);
+      let updated = origIsArray ? [...original] : {...original};
       let cursor = updated;
 
       for (let i = 0; i < p.length - 1; i++) {
@@ -53,9 +54,13 @@ export default function readWriter(original: any): ReadWriter {
         cursor = cursor[p[i]];
       }
 
-      cursor[p[p.length - 1]] = value;
+      if (p.length > 0) {
+        cursor[p[p.length - 1]] = value;
+      } else {
+        updated = value;
+      }
 
-      return readWriter({...updated});
+      return readWriter(origIsArray ? [...updated] : {...updated}).read<any>();
     }
 
     function fromJson(input: string): ReadWriter {

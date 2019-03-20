@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {FunctionComponent} from 'react';
+import namespaceClassName from '../../../util/namespaceClassName';
 
 interface Props {
   label?: string;
@@ -7,11 +8,13 @@ interface Props {
   value: string;
 }
 
+const c = namespaceClassName('DefaultNumberEditor');
+
 const DefaultStringEditor: FunctionComponent<Props> = (props: Props) => {
   function renderLabel() {
     if (!!props.label) {
       return (
-        <label className={'DefaultStringEditor--label'}>{props.label}</label>
+        <label className={c('label')}>{props.label}</label>
       );
     }
 
@@ -23,9 +26,10 @@ const DefaultStringEditor: FunctionComponent<Props> = (props: Props) => {
   }
 
   return (
-    <div className={'DefaultStringEditor--root'}>
+    <div className={c('root')}>
       {renderLabel()}
       <input
+        className={c('value')}
         type={'text'}
         value={props.value}
         onChange={handleChange}

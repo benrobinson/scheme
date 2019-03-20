@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {FunctionComponent} from "react";
+import namespaceClassName from '../../../util/namespaceClassName';
 
 interface Props {
   label?: string,
@@ -7,12 +8,14 @@ interface Props {
   value: boolean;
 }
 
+const c  = namespaceClassName('DefaultBooleanEditor');
+
 const DefaultBooleanEditor: FunctionComponent<Props> = (props: Props) => {
 
   function renderLabel() {
     if (!!props.label) {
       return (
-        <label className={'DefaultBooleanEditor--label'}>{props.label}</label>
+        <label className={c('label')}>{props.label}</label>
       );
     }
 
@@ -24,9 +27,10 @@ const DefaultBooleanEditor: FunctionComponent<Props> = (props: Props) => {
   }
 
   return (
-    <div className={'DefaultBooleanEditor--root'}>
+    <div className={c('root')}>
       {renderLabel()}
       <input
+        className={c('value')}
         type={'checkbox'}
         checked={props.value}
         onChange={handleChange}

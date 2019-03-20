@@ -1,6 +1,7 @@
 import * as React from "react";
 import {FunctionComponent, ReactElement} from "react";
 import {DefaultArrayItem} from "../controllers/edit";
+import namespaceClassName from '../../../util/namespaceClassName';
 
 interface Props {
   label?: string;
@@ -9,13 +10,15 @@ interface Props {
   values: DefaultArrayItem[];
 }
 
+const c = namespaceClassName('DefaultArrayEditor');
+
 const DefaultArrayEditor: FunctionComponent<Props> = (props: Props) => {
 
   function renderItem(item: DefaultArrayItem, i) {
     return (
-      <li className={'DefaultArrayEditor--value'} key={i}>
+      <li className={c('value')} key={i}>
         {item.editor}
-        <button className={'DefaultArrayEditor--remove-button'} onClick={() => props.onRemoveItem(item.value)}>
+        <button className={c('remove-button')} onClick={() => props.onRemoveItem(item.value)}>
           {'Remove'}
         </button>
       </li>
@@ -25,7 +28,7 @@ const DefaultArrayEditor: FunctionComponent<Props> = (props: Props) => {
   function renderLabel() {
     if (!!props.label) {
       return (
-        <label className={'DefaultArrayEditor--label'}>{props.label}</label>
+        <label className={c('label')}>{props.label}</label>
       );
     }
 
@@ -33,13 +36,13 @@ const DefaultArrayEditor: FunctionComponent<Props> = (props: Props) => {
   }
 
   return (
-    <div className={'DefaultArrayEditor--root'}>
+    <div className={c('root')}>
       {renderLabel()}
-      <ul className={'DefaultArrayEditor---values'}>
+      <ul className={c('values')}>
         {props.values.map(renderItem)}
       </ul>
       <button
-        className={'DefaultArrayEditor--add-button'}
+        className={c('add-button')}
         onClick={props.onAddItem}
       >
         {'Add'}
