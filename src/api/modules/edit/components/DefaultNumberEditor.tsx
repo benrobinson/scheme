@@ -1,36 +1,20 @@
 import * as React from 'react';
-import {FunctionComponent} from "react";
 import namespaceClassName from '../../../util/namespaceClassName';
-
-interface Props {
-  label?: string;
-  maximum: number;
-  minimum: number;
-  onChange: (value: number) => any,
-  value: number;
-}
+import Editor from "../models/Editor";
+import EditorProps from "../models/EditorProps";
+import Label from "./Label";
 
 const c = namespaceClassName('DefaultNumberEditor');
 
-const DefaultNumberEditor: FunctionComponent<Props> = (props: Props) => {
-
-  function renderLabel() {
-    if (!!props.label) {
-      return (
-        <label className={c('label')}>{props.label}</label>
-      );
-    }
-
-    return null;
-  }
+const DefaultNumberEditor: Editor<number> = (props: EditorProps<number>) => {
 
   function handleChange(e) {
-    props.onChange(parseFloat(e.target.value))
+    props.onUpdate(props.path.write(parseFloat(e.target.value)))
   }
 
   return (
     <div className={c('root')}>
-      {renderLabel()}
+      <Label defaultLabel={'Number Editor'} schema={props.schema} />
       <input
         className={c('value')}
         type={'number'}

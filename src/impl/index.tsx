@@ -56,7 +56,7 @@ const exampleSchema = {
 };
 
 const root = document.getElementById('root');
-const Edit = scheme.edit(scheme.generate(exampleSchema), exampleSchema);
+const Edit = scheme.edit;
 
 class Wrapper extends Component<any, any> {
 
@@ -74,7 +74,11 @@ class Wrapper extends Component<any, any> {
   };
 
   render = () =>
-    <Edit onUpdate={this.handleUpdate} value={this.state.value} />
+    <Edit
+      value={this.state.value}
+      onUpdate={this.handleUpdate}
+      schema={exampleSchema}
+    />
 }
 
 

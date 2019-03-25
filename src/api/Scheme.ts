@@ -6,7 +6,7 @@ import generateController from "./modules/generate/controllers/generate";
 import editController from "./modules/edit/controllers/edit";
 import validateController from "./modules/validate/controllers/validate";
 import Schema from "./models/Schema";
-import EditorComponent from "./modules/edit/models/EditorComponent";
+import {ReactElement} from "react";
 
 export interface SchemeConfig {
   generateController: GenerateController;
@@ -16,7 +16,7 @@ export interface SchemeConfig {
 
 export interface Scheme {
   generate: (schema: Schema) => any;
-  edit: (value: any, schema: Schema) => EditorComponent;
+  edit: (value: any, schema: Schema) => ReactElement;
   validate: (value: any, schema: Schema) => boolean;
 }
 

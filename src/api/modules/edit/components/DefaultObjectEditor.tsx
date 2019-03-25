@@ -1,15 +1,27 @@
 import * as React from 'react';
 import {FunctionComponent, ReactElement} from "react";
 import namespaceClassName from '../../../util/namespaceClassName';
-
-interface Props {
-  label?: string;
-  fields: ReactElement[]
-}
+import EditorProps from "../models/EditorProps";
+import Label from "./Label";
+import readWriter from "../../../util/ReadWriter";
 
 const c = namespaceClassName('DefaultObjectEditor');
 
-const DefaultObjectEditor: FunctionComponent<Props> = (props: Props) => {
+const DefaultObjectEditor: FunctionComponent<EditorProps<object>> = (props: EditorProps<object>) => {
+
+  const schemaReader = readWriter(props.schema);
+  const schemaProps = schemaReader
+    .into('properties')
+    .readAsOpt<{}>()
+    .getOrElse({});
+  const fields = Object
+    .keys(schemaProps)
+    .map(prop => props.onEdit({
+      value: props.value[prop],
+      schema: schemaProps[prop],
+      path: props.path.into(prop),
+      onUpdate: props.onUpdate
+    }));
 
   function renderField(field: ReactElement, i) {
     return (
@@ -19,21 +31,11 @@ const DefaultObjectEditor: FunctionComponent<Props> = (props: Props) => {
     );
   }
 
-  function renderLabel() {
-    if (!!props.label) {
-      return (
-        <label className={c('label')}>{props.label}</label>
-      );
-    }
-
-    return null;
-  }
-
   return (
     <div className={c('root')}>
       <fieldset className={c('fields')}>
-        {renderLabel()}
-        {Object.keys(props.fields).map((k, i) => renderField(props.fields[k], i))}
+        <Label defaultLabel={'Object Editor'} schema={props.schema} />
+        {Object.keys(fields).map((k, i) => renderField(fields[k], i))}
       </fieldset>
     </div>
   );

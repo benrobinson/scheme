@@ -1,34 +1,20 @@
 import * as React from 'react';
-import {FunctionComponent} from "react";
 import namespaceClassName from '../../../util/namespaceClassName';
-
-interface Props {
-  label?: string,
-  onChange: (value: boolean) => any,
-  value: boolean;
-}
+import Editor from "../models/Editor";
+import EditorProps from "../models/EditorProps";
+import Label from "./Label";
 
 const c  = namespaceClassName('DefaultBooleanEditor');
 
-const DefaultBooleanEditor: FunctionComponent<Props> = (props: Props) => {
-
-  function renderLabel() {
-    if (!!props.label) {
-      return (
-        <label className={c('label')}>{props.label}</label>
-      );
-    }
-
-    return null;
-  }
+const DefaultBooleanEditor: Editor<boolean> = (props: EditorProps<boolean>) => {
 
   function handleChange(e) {
-    props.onChange(!props.value)
+    props.onUpdate(props.path.write(!props.value))
   }
 
   return (
     <div className={c('root')}>
-      {renderLabel()}
+      <Label defaultLabel={'Boolean Editor'} schema={props.schema} />
       <input
         className={c('value')}
         type={'checkbox'}

@@ -1,49 +1,59 @@
 import * as React from "react";
 import {FunctionComponent, ReactElement} from "react";
-import {DefaultArrayItem} from "../controllers/edit";
 import namespaceClassName from '../../../util/namespaceClassName';
+import Label from "./Label";
+import EditorProps from "../models/EditorProps";
+import readWriter from "../../../util/ReadWriter";
+import Schema from "../../../models/Schema";
+import {generate} from "../../generate/controllers/generate";
 
-interface Props {
-  label?: string;
-  onAddItem: () => any;
-  onRemoveItem: (item: any) => any;
-  values: DefaultArrayItem[];
+export interface DefaultArrayItem {
+  editor: ReactElement,
+  value: any
 }
 
 const c = namespaceClassName('DefaultArrayEditor');
 
-const DefaultArrayEditor: FunctionComponent<Props> = (props: Props) => {
+const DefaultArrayEditor: FunctionComponent<EditorProps<[]>> = (props: EditorProps<[]>) => {
+
+  const schemaReader = readWriter(props.schema);
+  const itemSchema = schemaReader
+    .into('items')
+    .readAsOpt<Schema>()
+    .getOrElse({type: 'null'});
+  const values: DefaultArrayItem[] = props.value.map((v, i) => ({
+    editor: props.onEdit({
+      value: v,
+      schema: itemSchema,
+      path: props.path.into(i),
+      onUpdate: props.onUpdate
+    }),
+    value: v
+  }));
+  const blankItem = generate(itemSchema);
+  const onAddItem = () => props.onUpdate(props.path.write([...props.value, blankItem]));
+  const onRemoveItem = (item: any) => props.onUpdate(props.path.write(props.value.filter(v => v !== item)));
 
   function renderItem(item: DefaultArrayItem, i) {
     return (
       <li className={c('value')} key={i}>
         {item.editor}
-        <button className={c('remove-button')} onClick={() => props.onRemoveItem(item.value)}>
+        <button className={c('remove-button')} onClick={() => onRemoveItem(item.value)}>
           {'Remove'}
         </button>
       </li>
     );
   }
 
-  function renderLabel() {
-    if (!!props.label) {
-      return (
-        <label className={c('label')}>{props.label}</label>
-      );
-    }
-
-    return null;
-  }
-
   return (
     <div className={c('root')}>
-      {renderLabel()}
+      <Label defaultLabel={'Array Editor'} schema={props.schema}/>
       <ul className={c('values')}>
-        {props.values.map(renderItem)}
+        {values.map(renderItem)}
       </ul>
       <button
         className={c('add-button')}
-        onClick={props.onAddItem}
+        onClick={onAddItem}
       >
         {'Add'}
       </button>
