@@ -1,16 +1,17 @@
 import * as React from 'react';
-import Editor from "../api/modules/edit/models/Editor";
-import Schema from "../api/models/Schema";
-import readWriter, {ReadWriter} from "../api/util/ReadWriter";
-import OnUpdate from "../api/modules/edit/models/OnUpdate";
-import {ReactElement} from "react";
+import {ReactElement} from 'react';
+import readWriter from '~/api/util/ReadWriter';
+import Editor from '~/api/modules/edit/models/Editor';
+import EditorProps from '~/api/modules/edit/models/EditorProps';
 
 interface Illustration {
   link: string;
   type: string;
 }
 
-const IllustrationEditor: Editor<Illustration> = (value: Illustration, schema: Schema, path: ReadWriter, onUpdate: OnUpdate): ReactElement => {
+const IllustrationEditor: Editor<Illustration> = (props: EditorProps<Illustration>): ReactElement => {
+  const {onUpdate, path, schema, value} = props;
+  
   const schemaReader = readWriter(schema);
   const label = schemaReader.into('title').readAsOpt<string>().getOrElse('Illustration Editor');
   const onChangeLink = (link: string) => {

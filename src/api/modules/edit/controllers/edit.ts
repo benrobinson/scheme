@@ -1,33 +1,28 @@
-import DefaultObjectEditor from "../components/DefaultObjectEditor";
-import DefaultArrayEditor from "../components/DefaultArrayEditor";
-import DefaultStringEditor from "../components/DefaultStringEditor";
-import DefaultNumberEditor from "../components/DefaultNumberEditor";
-import DefaultBooleanEditor from "../components/DefaultBooleanEditor";
+import {ReactElement} from 'react';
 
-import EditController from "../models/EditController";
-import Editor from "../models/Editor";
-import Editors from "../models/Editors";
+import readWriter, {ReadWriter} from '~/api/util/ReadWriter';
+import Schema, {SchemaType} from '~/api/models/Schema';
 
-import readWriter, {ReadWriter} from "../../../util/ReadWriter";
-import {SchemaType} from "../../../models/Schema";
-import EditorProps from "../models/EditorProps";
-
-import {ReactElement} from "react";
+import EditController from '~/api/modules/edit/models/EditController';
+import Editor from '~/api/modules/edit/models/Editor';
+import Editors from '~/api/modules/edit/models/Editors';
+import EditorProps from '~/api/modules/edit/models/EditorProps';
+import DefaultEditor from "~/api/modules/edit/models/DefaultEditor";
 
 export default function editController(editors: Editors = {}): EditController {
 
-  const editDefault: Editor<any> = (props: EditorProps<any>): ReactElement => {
-    switch(props.schema.type) {
+  const defaultEditorName = (schema: Schema): string => {
+    switch(schema.type) {
       case SchemaType.ARRAY:
-        return DefaultArrayEditor(props);
+        return DefaultEditor.ARRAY;
       case SchemaType.BOOLEAN:
-        return DefaultBooleanEditor(props);
+        return DefaultEditor.BOOLEAN;
       case SchemaType.NUMBER:
-        return DefaultNumberEditor(props);
+        return DefaultEditor.NUMBER;
       case SchemaType.OBJECT:
-        return DefaultObjectEditor(props);
+        return DefaultEditor.OBJECT;
       case SchemaType.STRING:
-        return DefaultStringEditor(props);
+        return DefaultEditor.STRING;
       default:
         return null;
     }
@@ -37,30 +32,30 @@ export default function editController(editors: Editors = {}): EditController {
 
   const edit: Editor<any> = (props: EditorProps<any>): ReactElement => {
     const propsReadWriter = readWriter(props);
-    const customEditor = propsReadWriter.into('schema').into('editor').readAsOpt<string>();
-    const useCustomEditor = !customEditor.isNone;
-    const customEditorExists = !editorsReader
-      .into(customEditor.value)
-      .readAsOpt<Editor<any>>()
-      .isNone;
+
     const path = propsReadWriter
       .into('path')
       .readAsOpt<ReadWriter>()
       .getOrElse(readWriter(props.value));
+
     const resolvedProps = readWriter(propsReadWriter
       .into('path')
       .write(path))
       .into('onEdit')
       .write(edit);
 
-    if (useCustomEditor && customEditorExists) {
-      return editors[customEditor.value](resolvedProps);
-    } else {
-      return editDefault(resolvedProps);
-    }
+    return editorsReader
+      .into(propsReadWriter
+        .into('schema')
+        .into('editor')
+        .readAsOpt<string>()
+        .getOrElse(defaultEditorName(props.schema)))
+      .readAsOpt<Editor<any>>()
+      .map(editor => editor(resolvedProps))
+      .getOrElse(null);
   };
 
-  function toFunction() {
+  function toFunction(): Editor<any> {
     return edit;
   }
 

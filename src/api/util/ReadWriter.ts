@@ -1,4 +1,4 @@
-import Option, {option} from "./Option";
+import Option, {option} from './Option';
 
 export interface ReadWriter {
   fromJson: (input: string) => ReadWriter;

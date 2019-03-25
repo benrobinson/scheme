@@ -1,8 +1,10 @@
-import {ReactElement} from "react";
-import Schema from "../../../models/Schema";
-import readWriter from "../../../util/ReadWriter";
-import * as React from "react";
-import namespaceClassName from "../../../util/namespaceClassName";
+import * as React from 'react';
+import {ReactElement} from 'react';
+
+import Schema from '~/api/models/Schema';
+
+import namespaceClassName from '~/api/util/namespaceClassName';
+import readWriter from '~/api/util/ReadWriter';
 
 interface Props {
   defaultLabel: string;

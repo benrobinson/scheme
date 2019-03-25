@@ -1,8 +1,10 @@
-import ReadWriter from "../../../util/ReadWriter";
-import {validate} from "./validate";
-import Validator from "../models/Validator";
-import Schema from "../../../models/Schema";
-import Option from "../../../util/Option";
+import Schema from '~/api/models/Schema';
+
+import Option from '~/api/util/Option';
+import ReadWriter from '~/api/util/ReadWriter';
+
+import {validate} from '~/api/modules/validate/controllers/validate';
+import Validator from '~/api/modules/validate/models/Validator';
 
 const validateArray: Validator<[]> = (value: [], schema: Schema): boolean => {
 

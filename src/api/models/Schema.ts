@@ -7,10 +7,10 @@ export interface Schemas {
 }
 
 export enum SchemaType {
-  ARRAY = "array",
-  BOOLEAN = "boolean",
-  OBJECT = "object",
-  NUMBER = "number",
-  NULL = "null",
-  STRING = "string"
+  ARRAY = 'array',
+  BOOLEAN = 'boolean',
+  OBJECT = 'object',
+  NUMBER = 'number',
+  NULL = 'null',
+  STRING = 'string'
 }

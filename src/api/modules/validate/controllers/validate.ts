@@ -1,10 +1,12 @@
-import validateArray from "./validateArray";
-import validateObject from "./validateObject";
-import validateString from "./validateString";
-import validateEnum from "./validateEnum";
-import Validator from "../models/Validator";
-import Schema, {SchemaType} from "../../../models/Schema";
-import ValidateController from "../models/ValidateController";
+import Schema, {SchemaType} from '~/api/models/Schema';
+
+import validateArray from '~/api/modules/validate/controllers/validateArray';
+import validateObject from '~/api/modules/validate/controllers/validateObject';
+import validateString from '~/api/modules/validate/controllers/validateString';
+import validateEnum from '~/api/modules/validate/controllers/validateEnum';
+
+import Validator from '~/api/modules/validate/models/Validator';
+import ValidateController from '~/api/modules/validate/models/ValidateController';
 
 export const validate: Validator<any> = (value: any, schema: Schema): boolean => {
   switch(schema.type) {

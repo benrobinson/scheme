@@ -1,7 +1,8 @@
-import {validate} from "./validate";
-import Validator from "../models/Validator";
-import Schema from "../../../models/Schema";
-import ReadWriter from "../../../util/ReadWriter";
+import Schema from '~/api/models/Schema';
+import ReadWriter from '~/api/util/ReadWriter';
+
+import {validate} from '~/api/modules/validate/controllers/validate';
+import Validator from '~/api/modules/validate/models/Validator';
 
 const validateObject: Validator<object> = (value: {}, schema: Schema): boolean => {
 
@@ -11,7 +12,7 @@ const validateObject: Validator<object> = (value: {}, schema: Schema): boolean =
   const valueProps = Object.keys(value);
 
   function validateRequired() {
-    const requiredProps = schemaReader.into("required").readAsOpt<[]>().getOrElse([]);
+    const requiredProps = schemaReader.into('required').readAsOpt<[]>().getOrElse([]);
 
     if (requiredProps.length > valueProps.length) return false;
 
@@ -23,7 +24,7 @@ const validateObject: Validator<object> = (value: {}, schema: Schema): boolean =
   }
 
   function validateChildren() {
-    const properties = schemaReader.into("properties").readAsOpt<{}>().getOrElse({});
+    const properties = schemaReader.into('properties').readAsOpt<{}>().getOrElse({});
     const schemaProps = Object.keys(properties);
 
     return schemaProps.reduce((isValid, prop) => {

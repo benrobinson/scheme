@@ -1,11 +1,12 @@
-import * as React from "react";
-import {FunctionComponent, ReactElement} from "react";
-import namespaceClassName from '../../../util/namespaceClassName';
-import Label from "./Label";
-import EditorProps from "../models/EditorProps";
-import readWriter from "../../../util/ReadWriter";
-import Schema from "../../../models/Schema";
-import {generate} from "../../generate/controllers/generate";
+import * as React from 'react';
+import {ReactElement} from 'react';
+import Schema from '~/api/models/Schema';
+import namespaceClassName from '~/api/util/namespaceClassName';
+import readWriter from '~/api/util/ReadWriter';
+import EditorProps from '~/api/modules/edit/models/EditorProps';
+import Editor from '~/api/modules/edit/models/Editor';
+import {generate} from '~/api/modules/generate/controllers/generate';
+import Label from '~/impl-default/modules/edit/components/Label';
 
 export interface DefaultArrayItem {
   editor: ReactElement,
@@ -14,25 +15,27 @@ export interface DefaultArrayItem {
 
 const c = namespaceClassName('DefaultArrayEditor');
 
-const DefaultArrayEditor: FunctionComponent<EditorProps<[]>> = (props: EditorProps<[]>) => {
+const DefaultArrayEditor: Editor<[]> = (props: EditorProps<[]>) => {
 
-  const schemaReader = readWriter(props.schema);
+  const {schema, path, onEdit, onUpdate, value} = props;
+
+  const schemaReader = readWriter(schema);
   const itemSchema = schemaReader
     .into('items')
     .readAsOpt<Schema>()
     .getOrElse({type: 'null'});
   const values: DefaultArrayItem[] = props.value.map((v, i) => ({
-    editor: props.onEdit({
+    editor: onEdit({
       value: v,
       schema: itemSchema,
-      path: props.path.into(i),
-      onUpdate: props.onUpdate
+      path: path.into(i),
+      onUpdate: onUpdate
     }),
     value: v
   }));
   const blankItem = generate(itemSchema);
-  const onAddItem = () => props.onUpdate(props.path.write([...props.value, blankItem]));
-  const onRemoveItem = (item: any) => props.onUpdate(props.path.write(props.value.filter(v => v !== item)));
+  const onAddItem = () => onUpdate(path.write([...value, blankItem]));
+  const onRemoveItem = (item: any) => onUpdate(path.write(value.filter(v => v !== item)));
 
   function renderItem(item: DefaultArrayItem, i) {
     return (
@@ -47,7 +50,7 @@ const DefaultArrayEditor: FunctionComponent<EditorProps<[]>> = (props: EditorPro
 
   return (
     <div className={c('root')}>
-      <Label defaultLabel={'Array Editor'} schema={props.schema}/>
+      <Label defaultLabel={'Array Editor'} schema={schema}/>
       <ul className={c('values')}>
         {values.map(renderItem)}
       </ul>

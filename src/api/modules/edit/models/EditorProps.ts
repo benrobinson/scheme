@@ -1,7 +1,9 @@
-import OnUpdate from "./OnUpdate";
-import Schema from "../../../models/Schema";
-import {ReadWriter} from "../../../util/ReadWriter";
-import {ReactElement} from "react";
+import {ReactElement} from 'react';
+
+import Schema from '~/api/models/Schema';
+import {ReadWriter} from '~/api/util/ReadWriter';
+
+import OnUpdate from '~/api/modules/edit/models/OnUpdate';
 
 export default interface EditorProps<T> {
   value: T;

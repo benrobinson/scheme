@@ -1,17 +1,12 @@
 import * as React from 'react';
 import {render} from 'react-dom';
-import Scheme, {schemeConfigDefault} from '../api/Scheme';
-import {Component, FunctionComponent} from "react";
-import editController from "../api/modules/edit/controllers/edit";
-import generateController from "../api/modules/generate/controllers/generate";
-import validateController from "../api/modules/validate/controllers/validate";
-import IllustrationEditor from './IllustrationEditor';
+import {Component} from 'react';
 
-const scheme = Scheme({
-  editController: editController().withEditor('IllustrationEditor', IllustrationEditor),
-  generateController: generateController(),
-  validateController: validateController()
-});
+import Scheme from '~/api/scheme';
+import schemeConfig from '~/impl/scheme-config';
+import IllustrationEditor from '~/impl/modules/edit/components/IllustrationEditor';
+
+const scheme = Scheme(schemeConfig);
 
 const exampleSchema = {
   title: 'Lots o\' objects',

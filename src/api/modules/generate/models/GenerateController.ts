@@ -1,5 +1,6 @@
-import Generator from "./Generator";
-import Schema from "../../../models/Schema";
+import Schema from '~/api/models/Schema';
+
+import Generator from '~/api/modules/generate/models/Generator';
 
 export default interface GenerateController {
   toFunction(): (schema: Schema) => any;

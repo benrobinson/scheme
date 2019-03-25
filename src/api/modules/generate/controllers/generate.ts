@@ -1,7 +1,9 @@
-import Generator from "../models/Generator";
-import Schema, {SchemaType} from "../../../models/Schema";
-import ReadWriter from "../../../util/ReadWriter";
-import GenerateController from "../models/GenerateController";
+import ReadWriter from '~/api/util/ReadWriter';
+
+import Schema, {SchemaType} from '~/api/models/Schema';
+
+import Generator from '~/api/modules/generate/models/Generator';
+import GenerateController from '~/api/modules/generate/models/GenerateController';
 
 export const generate: Generator<any> = (schema: Schema) => {
   switch (schema.type) {
