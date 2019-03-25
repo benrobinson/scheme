@@ -1,8 +1,6 @@
 import {ReactElement} from 'react';
-
 import readWriter, {ReadWriter} from '~/api/util/ReadWriter';
 import Schema, {SchemaType} from '~/api/models/Schema';
-
 import EditController from '~/api/modules/edit/models/EditController';
 import Editor from '~/api/modules/edit/models/Editor';
 import Editors from '~/api/modules/edit/models/Editors';

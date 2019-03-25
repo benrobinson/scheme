@@ -1,8 +1,6 @@
 import Schema from '~/api/models/Schema';
-
 import Option from '~/api/util/Option';
 import ReadWriter from '~/api/util/ReadWriter';
-
 import {validate} from '~/api/modules/validate/controllers/validate';
 import Validator from '~/api/modules/validate/models/Validator';
 

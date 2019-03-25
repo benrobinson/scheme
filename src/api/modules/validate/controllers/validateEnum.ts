@@ -1,5 +1,4 @@
 import ReadWriter from '~/api/util/ReadWriter';
-
 import Validator from '~/api/modules/validate/models/Validator';
 
 const validateEnum: Validator<any> = (value: any, schema) => {

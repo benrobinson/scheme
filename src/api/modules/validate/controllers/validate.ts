@@ -1,10 +1,8 @@
 import Schema, {SchemaType} from '~/api/models/Schema';
-
 import validateArray from '~/api/modules/validate/controllers/validateArray';
 import validateObject from '~/api/modules/validate/controllers/validateObject';
 import validateString from '~/api/modules/validate/controllers/validateString';
 import validateEnum from '~/api/modules/validate/controllers/validateEnum';
-
 import Validator from '~/api/modules/validate/models/Validator';
 import ValidateController from '~/api/modules/validate/models/ValidateController';
 

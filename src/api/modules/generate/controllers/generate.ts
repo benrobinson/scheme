@@ -1,7 +1,5 @@
 import ReadWriter from '~/api/util/ReadWriter';
-
 import Schema, {SchemaType} from '~/api/models/Schema';
-
 import Generator from '~/api/modules/generate/models/Generator';
 import GenerateController from '~/api/modules/generate/models/GenerateController';
 
