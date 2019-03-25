@@ -8,15 +8,26 @@
     "react-dom": "^16.8.1"
   },
   "devDependencies": {
+    "@babel/preset-env": "^7.4.2",
+    "@babel/preset-typescript": "^7.3.3",
+    "@types/jest": "^24.0.11",
+    "@types/node": "^11.11.6",
     "@types/react": "^16.8.7",
     "@types/react-dom": "^16.8.2",
+    "jest": "^24.5.0",
     "parcel-bundler": "^1.12.3",
+    "ts-jest": "^24.0.0",
     "typescript": "^3.3.4000"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "$(npm bin)/jest",
     "start": ".$(npm bin)/parcel ./src/index.html",
     "build": "$(npm bin)/parcel build ./src/index.html"
+  },
+  "jest": {
+    "moduleNameMapper": {
+      "~(.*)": "<rootDir>/src/$1"
+    }
   },
   "author": "Benjamin Alan Robinson",
   "license": "ISC"
