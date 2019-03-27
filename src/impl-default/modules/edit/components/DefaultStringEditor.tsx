@@ -2,26 +2,30 @@ import * as React from 'react';
 import namespaceClassName from '~/api/util/namespaceClassName';
 import EditorProps from '~/api/modules/edit/models/EditorProps';
 import Editor from '~/api/modules/edit/models/Editor';
-import Label from '~/impl-default/modules/edit/components/Label';
+import readWriter from "~api/util/ReadWriter";
+import TextInput, {TextInputResult} from "~impl-default/modules/edit/components/TextInput";
 
 const c = namespaceClassName('DefaultNumberEditor');
 
 const DefaultStringEditor: Editor<string> = (props: EditorProps<string>) => {
 
   const {onUpdate, path, schema, value} = props;
+  const label = readWriter(props.schema)
+    .into('title')
+    .readAsOpt<string>()
+    .getOrElse('Text Editor');
 
-  function handleChange(e) {
-    onUpdate(path.write(e.target.value))
+  function handleChange(result: TextInputResult) {
+    if (result.isValid) {
+      onUpdate(path.write(result.value))
+    }
   }
 
   return (
     <div className={c('root')}>
-      <Label defaultLabel={'Text Editor'} schema={schema} />
-      <input
-        className={c('value')}
-        type={'text'}
-        value={value}
+      <TextInput
         onChange={handleChange}
+        value={value}
       />
     </div>
   );
