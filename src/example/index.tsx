@@ -9,40 +9,112 @@ import IllustrationEditor from '~/example/modules/edit/components/IllustrationEd
 const scheme = Scheme(schemeConfig);
 
 const exampleSchema = {
-  title: 'Lots o\' objects',
-  type: 'array',
-  items: {
-    type: 'object',
-    properties: {
-      foo: {
-        type: 'string',
-        default: 'Eggs'
-      },
-      bar: {
-        type: 'number',
-        default: 3
-      },
-      baz: {
-        type: 'boolean',
-        default: false
-      },
-      qux: {
-        type: 'array',
-        default: [],
-        items: {
+  title: 'Resume Builder',
+  type: 'object',
+  properties: {
+    name: {
+      title: 'Your Name',
+      type: 'string'
+    },
+    contact: {
+      title: 'Contact Information',
+      type: 'object',
+      properties: {
+        email: {
+          title: 'Email Address',
+          type: 'string'
+        },
+        phone: {
+          title: 'Phone Number',
           type: 'string'
         }
-      },
-      illustration: {
+      }
+    },
+    headline: {
+      title: 'Brief summary of what you offer',
+      type: 'string'
+    },
+    skills: {
+      title: 'Skills',
+      type: 'array',
+      items: {
+        title: 'Skill',
+        type: 'string'
+      }
+    },
+    jobs: {
+      title: 'Work Experience',
+      type: 'array',
+      items: {
+        title: 'Job',
         type: 'object',
-        editor: 'IllustrationEditor',
         properties: {
-          link: {
+          company: {
+            title: 'Company',
             type: 'string'
           },
-          type: {
-            type: 'string',
-            enum: ['image', 'video']
+          title: {
+            title: 'Job Title',
+            type: 'string'
+          },
+          responsibilities: {
+            title: 'Responsibilities/Highlights',
+            type: 'array',
+            items: {
+              title: 'Example',
+              type: 'string'
+            }
+          },
+          dates: {
+            title: 'Dates Worked',
+            type: 'object',
+            properties: {
+              from: {
+                title: 'Started',
+                type: 'string'
+              },
+              to: {
+                title: 'Ended',
+                type: 'string'
+              }
+            }
+          },
+          isCurrent: {
+            title: 'I still work here',
+            type: 'boolean',
+            default: false
+          }
+        }
+      }
+    },
+    schools: {
+      title: 'Education',
+      type: 'array',
+      items: {
+        title: 'School',
+        type: 'object',
+        properties: {
+          name: {
+            title: 'School Name',
+            type: 'string'
+          },
+          degree: {
+            title: 'Degree Obtained',
+            type: 'string'
+          },
+          dates: {
+            title: 'Dates Worked',
+            type: 'object',
+            properties: {
+              from: {
+                title: 'Started',
+                type: 'string'
+              },
+              to: {
+                title: 'Ended',
+                type: 'string'
+              }
+            }
           }
         }
       }

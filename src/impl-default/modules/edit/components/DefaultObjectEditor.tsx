@@ -32,9 +32,11 @@ const DefaultObjectEditor: Editor<object> = (props: EditorProps<object>) => {
     .getOrElse('Object Editor');
 
   return (
-    <FieldSet label={label}>
-      {fields}
-    </FieldSet>
+    <div className={c('root')}>
+      <FieldSet label={label}>
+        {fields}
+      </FieldSet>
+    </div>
   );
 
 };

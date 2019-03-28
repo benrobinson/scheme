@@ -8,12 +8,16 @@
     cursor: pointer;
     display: block;
     font-size: 16px;
-    font-family: 'Muli', 'Helvetica Neue', Helvetica, sans-serif;
+    font-family: 'Helvetica Neue', Helvetica, sans-serif;
     font-weight: 400;
     letter-spacing: 1px;
     margin-bottom: 10px;
     padding: 10px 20px;
     transition: all 100ms;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
   }
 
   &--root:hover {
