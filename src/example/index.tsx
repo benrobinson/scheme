@@ -3,8 +3,8 @@ import {render} from 'react-dom';
 import {Component} from 'react';
 
 import Scheme from '~/api/scheme';
-import schemeConfig from '~/impl/scheme-config';
-import IllustrationEditor from '~/impl/modules/edit/components/IllustrationEditor';
+import schemeConfig from '~/example/scheme-config';
+import IllustrationEditor from '~/example/modules/edit/components/IllustrationEditor';
 
 const scheme = Scheme(schemeConfig);
 

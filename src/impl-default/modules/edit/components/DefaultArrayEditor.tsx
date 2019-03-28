@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {ReactElement} from 'react';
+import {ReactElement, useState} from 'react';
 import Schema from '~/api/models/Schema';
 import namespaceClassName from '~/api/util/namespaceClassName';
 import readWriter from '~/api/util/ReadWriter';
@@ -7,6 +7,7 @@ import EditorProps from '~/api/modules/edit/models/EditorProps';
 import Editor from '~/api/modules/edit/models/Editor';
 import {generate} from '~/api/modules/generate/controllers/generate';
 import Label from '~/impl-default/modules/edit/components/Label';
+import Button, {ButtonStyle} from "~impl-default/modules/edit/components/Button";
 
 export interface DefaultArrayItem {
   editor: ReactElement,
@@ -18,7 +19,6 @@ const c = namespaceClassName('DefaultArrayEditor');
 const DefaultArrayEditor: Editor<[]> = (props: EditorProps<[]>) => {
 
   const {schema, path, onEdit, onUpdate, value} = props;
-
   const schemaReader = readWriter(schema);
   const itemSchema = schemaReader
     .into('items')
@@ -35,15 +35,19 @@ const DefaultArrayEditor: Editor<[]> = (props: EditorProps<[]>) => {
   }));
   const blankItem = generate(itemSchema);
   const onAddItem = () => onUpdate(path.write([...value, blankItem]));
-  const onRemoveItem = (item: any) => onUpdate(path.write(value.filter(v => v !== item)));
+  const onRemoveItem = (ii: number) => onUpdate(path.write(value.filter((_, i) => i !== ii)));
 
   function renderItem(item: DefaultArrayItem, i) {
     return (
       <li className={c('value')} key={i}>
         {item.editor}
-        <button className={c('remove-button')} onClick={() => onRemoveItem(item.value)}>
-          {'Remove'}
-        </button>
+        <div className={c('remove-button')}>
+          <Button
+            label={'Remove Item'}
+            onClick={() => onRemoveItem(i)}
+            style={ButtonStyle.NEGATIVE}
+          />
+        </div>
       </li>
     );
   }
@@ -54,12 +58,13 @@ const DefaultArrayEditor: Editor<[]> = (props: EditorProps<[]>) => {
       <ul className={c('values')}>
         {values.map(renderItem)}
       </ul>
-      <button
-        className={c('add-button')}
-        onClick={onAddItem}
-      >
-        {'Add'}
-      </button>
+      <div className={c('add-button')}>
+        <Button
+          label={'Add Item'}
+          onClick={onAddItem}
+          style={ButtonStyle.POSITIVE}
+        />
+      </div>
     </div>
   );
 };

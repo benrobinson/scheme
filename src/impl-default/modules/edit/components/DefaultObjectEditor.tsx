@@ -5,6 +5,7 @@ import readWriter from '~/api/util/ReadWriter';
 import EditorProps from '~/api/modules/edit/models/EditorProps';
 import Editor from '~/api/modules/edit/models/Editor';
 import Label from '~/impl-default/modules/edit/components/Label';
+import FieldSet from "~impl-default/modules/edit/components/FieldSet";
 
 const c = namespaceClassName('DefaultObjectEditor');
 
@@ -25,22 +26,15 @@ const DefaultObjectEditor: Editor<object> = (props: EditorProps<object>) => {
       path: path.into(prop),
       onUpdate: onUpdate
     }));
-
-  function renderField(field: ReactElement, i) {
-    return (
-      <div className={c('field')} key={i}>
-        {field}
-      </div>
-    );
-  }
+  const label = readWriter(props.schema)
+    .into('title')
+    .readAsOpt<string>()
+    .getOrElse('Object Editor');
 
   return (
-    <div className={c('root')}>
-      <fieldset className={c('fields')}>
-        <Label defaultLabel={'Object Editor'} schema={schema} />
-        {Object.keys(fields).map((k, i) => renderField(fields[k], i))}
-      </fieldset>
-    </div>
+    <FieldSet label={label}>
+      {fields}
+    </FieldSet>
   );
 
 };

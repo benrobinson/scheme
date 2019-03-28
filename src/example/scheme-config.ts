@@ -1,6 +1,6 @@
 import SchemeConfig from '~/api/models/SchemeConfig';
 import schemeConfigDefault from '~/impl-default/scheme-config-default';
-import IllustrationEditor from '~/impl/modules/edit/components/IllustrationEditor';
+import IllustrationEditor from '~/example/modules/edit/components/IllustrationEditor';
 
 const schemeConfig: SchemeConfig = {
   editController: schemeConfigDefault.editController.withEditor('IllustrationEditor', IllustrationEditor),

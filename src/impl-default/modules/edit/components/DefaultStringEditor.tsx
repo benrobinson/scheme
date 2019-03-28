@@ -1,11 +1,8 @@
 import * as React from 'react';
-import namespaceClassName from '~/api/util/namespaceClassName';
 import EditorProps from '~/api/modules/edit/models/EditorProps';
 import Editor from '~/api/modules/edit/models/Editor';
 import readWriter from "~api/util/ReadWriter";
-import TextInput, {TextInputResult} from "~impl-default/modules/edit/components/TextInput";
-
-const c = namespaceClassName('DefaultNumberEditor');
+import InputText from "~impl-default/modules/edit/components/InputText";
 
 const DefaultStringEditor: Editor<string> = (props: EditorProps<string>) => {
 
@@ -13,21 +10,18 @@ const DefaultStringEditor: Editor<string> = (props: EditorProps<string>) => {
   const label = readWriter(props.schema)
     .into('title')
     .readAsOpt<string>()
-    .getOrElse('Text Editor');
+    .getOrElse('Text Input');
 
-  function handleChange(result: TextInputResult) {
-    if (result.isValid) {
-      onUpdate(path.write(result.value))
-    }
+  function handleChange(value: string) {
+    onUpdate(path.write(value));
   }
 
   return (
-    <div className={c('root')}>
-      <TextInput
-        onChange={handleChange}
-        value={value}
-      />
-    </div>
+    <InputText
+      label={label}
+      onChange={handleChange}
+      value={value}
+    />
   );
 };
 

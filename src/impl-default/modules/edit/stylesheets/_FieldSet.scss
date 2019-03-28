@@ -1,0 +1,18 @@
+.FieldSet {
+
+  &--root {
+    margin: 0;
+    margin-bottom: 10px;
+    padding: 15px 20px;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+  }
+
+  &--label {
+    color: rgba(0, 0, 0, 0.5);
+    font-family: 'Helvetica Neue', Helvetica, sans-serif;
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+}

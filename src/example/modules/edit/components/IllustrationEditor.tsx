@@ -3,6 +3,8 @@ import {ReactElement} from 'react';
 import readWriter from '~/api/util/ReadWriter';
 import Editor from '~/api/modules/edit/models/Editor';
 import EditorProps from '~/api/modules/edit/models/EditorProps';
+import InputText from "~impl-default/modules/edit/components/InputText";
+import FieldSet from "~impl-default/modules/edit/components/FieldSet";
 
 interface Illustration {
   link: string;
@@ -20,10 +22,13 @@ const IllustrationEditor: Editor<Illustration> = (props: EditorProps<Illustratio
   };
 
   return (
-    <div className={'IllustrationEditor--root'}>
-      <label className={'IllustrationEditor--label'}>{label}</label>
-      <input className={'IllustrationEditor--link'} defaultValue={value.link} onChange={e => onChangeLink(e.target.value)} />
-    </div>
+    <FieldSet label={label}>
+      <InputText
+        label={'Illustration URL'}
+        onChange={onChangeLink}
+        value={value.link}
+      />
+    </FieldSet>
   )
 };
 
