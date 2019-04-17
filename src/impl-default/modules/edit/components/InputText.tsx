@@ -27,7 +27,7 @@ const defaultProps: Partial<Props> = {
   onClean: (value: string) => value,
   onChange: (value: string) => {},
   onFormat: (value: string) => value,
-  pattern: /.*/g,
+  pattern: null,
   patternMismatchMessage: 'Value does not match required input pattern',
   maxLength: Number.MAX_SAFE_INTEGER,
   minLength: 0,
@@ -53,7 +53,7 @@ export default (props: Props) => {
     const length = v.length;
 
     if (length < minLength || length > maxLength) return invalidResult(v, `Length must be between ${minLength} and ${maxLength}`);
-    if (!pattern.test(v)) return invalidResult(v, patternMismatchMessage);
+    if (!!pattern && !pattern.test(v)) return invalidResult(v, patternMismatchMessage);
 
     return validResult(v);
   }

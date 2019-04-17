@@ -5,3 +5,8 @@
 @import 'impl-default/modules/edit/stylesheets/FieldSet';
 @import 'impl-default/modules/edit/stylesheets/Input';
 @import 'impl-default/modules/edit/stylesheets/InputCheckbox';
+
+body {
+  font-family: 'Helvetica Neue', Helvetica, sans-serif;
+  letter-spacing: 1px;
+}

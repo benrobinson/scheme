@@ -31,7 +31,7 @@ const exampleSchema = {
       }
     },
     headline: {
-      title: 'Brief summary of what you offer',
+      title: 'Summary headline',
       type: 'string'
     },
     skills: {
@@ -103,7 +103,7 @@ const exampleSchema = {
             type: 'string'
           },
           dates: {
-            title: 'Dates Worked',
+            title: 'Dates Attended',
             type: 'object',
             properties: {
               from: {

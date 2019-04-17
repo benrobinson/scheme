@@ -1,12 +1,11 @@
 import * as React from 'react';
-import {ReactElement, Reducer, useState} from 'react';
+import {ReactElement} from 'react';
 import Schema from '~/api/models/Schema';
 import namespaceClassName from '~/api/util/namespaceClassName';
 import readWriter from '~/api/util/ReadWriter';
 import EditorProps from '~/api/modules/edit/models/EditorProps';
 import Editor from '~/api/modules/edit/models/Editor';
 import {generate} from '~/api/modules/generate/controllers/generate';
-import Label from '~/impl-default/modules/edit/components/Label';
 import Button, {ButtonStyle} from "~impl-default/modules/edit/components/Button";
 import FieldSet from "~impl-default/modules/edit/components/FieldSet";
 
@@ -41,6 +40,7 @@ const DefaultArrayEditor: Editor<[]> = (props: EditorProps<[]>) => {
     path: path.into(i),
     onUpdate: onUpdate
   }));
+  const itemLabel = readWriter(itemSchema).into('title').readAsOpt<string>().getOrElse('Item');
   const blankItem = generate(itemSchema);
   const onAddSubEditor = () => onUpdate(path.write([...value, blankItem]));
   const onRemoveSubEditor = (ii: number) => {
@@ -56,7 +56,7 @@ const DefaultArrayEditor: Editor<[]> = (props: EditorProps<[]>) => {
         </div>
         <div className={c('remove-button')}>
           <Button
-            label={'Remove Item'}
+            label={`Remove ${itemLabel}`}
             onClick={() => onRemoveSubEditor(i)}
             style={ButtonStyle.NEGATIVE}
           />
@@ -71,7 +71,7 @@ const DefaultArrayEditor: Editor<[]> = (props: EditorProps<[]>) => {
         {values.map(renderSubEditor)}
         <div className={c('add-button')} key={'add-button'}>
           <Button
-            label={'Add Item'}
+            label={`Add ${itemLabel}`}
             onClick={onAddSubEditor}
             style={ButtonStyle.POSITIVE}
           />
