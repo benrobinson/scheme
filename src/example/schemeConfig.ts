@@ -1,5 +1,5 @@
 import SchemeConfig from '~/api/models/SchemeConfig';
-import schemeConfigDefault from '~/impl-default/scheme-config-default';
+import schemeConfigDefault from '~/api/schemeConfigDefault.ts';
 import IllustrationEditor from '~/example/modules/edit/components/IllustrationEditor';
 
 const schemeConfig: SchemeConfig = {
